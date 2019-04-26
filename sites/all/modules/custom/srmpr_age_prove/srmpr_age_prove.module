@@ -27,6 +27,16 @@ function srmpr_age_prove_menu() {
     'position' => 'left',
     'weight' => -15,
   );
+  //page list log -18 years
+  $items['admin/config/age/data-children'] = array(
+    'title' => 'Data listed children Log ', 
+    'description' => 'Data listed children Log', 
+    'page callback' => '_age_form_data_children_table_custom', 
+    'page arguments' => '',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM, 
+    'file' => 'inc/srmpr_age_prove.pages.inc',
+    );  
   //Age form 
   $items['validar-edad'] = array(
     'type' => MENU_NORMAL_ITEM,
@@ -36,6 +46,7 @@ function srmpr_age_prove_menu() {
     'access arguments' => array('access content'),
     'file' => 'inc/srmpr_age_prove.forms.inc',
   );
+
   return $items;
 }
 
@@ -72,7 +83,9 @@ function srmpr_age_prove_permission() {
 function srmpr_age_prove_page_alter(&$page) {
   
   global $theme, $base_url; 
-  if(variable_get('theme_default', "") == $theme && variable_get('config_age_front_page', TRUE) == TRUE && !empty(variable_get('config_age_list',""))){
+  $redirect_set = variable_get('config_age_redirect_url','home');
+  $data_redirect = explode("?",$redirect_set);
+  if($data_redirect[0] != drupal_get_path_alias(current_path()) && !isset($_COOKIE['adult']) && variable_get('theme_default', "") == $theme && variable_get('config_age_front_page', TRUE) == TRUE && !empty(variable_get('config_age_list',""))){
       $type_filter = variable_get('config_age_listed',"view_listed_true");
       $lines = explode( "\n", variable_get('config_age_list',"config_age_list"));
       $isset = FALSE;
@@ -85,6 +98,8 @@ function srmpr_age_prove_page_alter(&$page) {
       $data_params = $_GET;
       unset($data_params['q']);
       $params = http_build_query($data_params);
+      $redirect_set = variable_get('config_age_redirect_url','home');
+      $data_redirect = explode("?",$redirect_set);
       switch ($type_filter) {
         case 'view_execept_listed':
           if(empty($isset) && current_path() != 'validar-edad'){
@@ -97,7 +112,6 @@ function srmpr_age_prove_page_alter(&$page) {
           }
           break;      
         default:
-          # code...
           break;
       }
     }

@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * @file
+ * This is the file description for form custom ('POSTOBON').
+ *
+ * In this more verbose, multi-line description, you can specify what this
+ * file does exactly.
+ *
+ * @author Juan David Ceballos ('Developer Web Semi senior('Drupal')')
+ */
+
+/**************************************************************************************************************************************** "Welcome Hooks" **********************************************
+***************************************************************************************************/
+
+
+/**
+ * Implementation of hook_install().
+ */
+
+
+/**
+ * Implementation of hook_uninstall().
+ */
+
+function srmpr_age_prove_uninstall() {
+    node_type_delete('srmpr_age_prove');
+}
+
+ /**
+  * Implements hook_install().
+  */
+ function srmpr_age_prove_install() {
+ }
+
+
+/**
+ * Implementation of hook_shema().
+ */
+
+function srmpr_age_prove_schema() {
+  $schema['ageValidation'] = array(
+    'description' => 'This is a table for my custom module',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Identificador de la tabla.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE
+      ),
+      'ip_address' => array(
+        'description' => t('IP ADDRESS'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+			'date_submit' => array(
+        'description' => t(' Age date submit'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),      
+      'date' => array(
+        'description' => t('date current'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''
+      ),      
+		),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+/******************************************************************************************************************************************** "End Hooks" **********************************************
+***************************************************************************************************/

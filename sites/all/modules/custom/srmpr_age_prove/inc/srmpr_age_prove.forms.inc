@@ -112,11 +112,15 @@ function srmpr_age_receive_form_validate($form, &$form_state){
   if(!is_numeric($year)){
     form_set_error('age_year', t('Is necessary add a Year number'));
   }
-
+  $timestamp = strtotime("{$day}-{$month}-{$year}");
+  if($timestamp > time()){
+    form_set_error('age_year', t('The age not is valid'));
+  }
 
 }
 
 function srmpr_age_receive_form_submit($form, &$form_state){
+
   $values = $form_state['values'];
   $day = $values['age_day'];
   $month = $values['age_month'];
@@ -124,6 +128,7 @@ function srmpr_age_receive_form_submit($form, &$form_state){
 
   $timestamp = strtotime("{$day}-{$month}-{$year}");
   if($timestamp > strtotime('-18 year', time())){
+    module_load_include('inc', 'srmpr_age_prove', 'inc/srmpr_age_prove.functions');
     unset($_GET['destination']);
     $redirect_set = variable_get('config_age_redirect_url','home');
     $data_redirect = explode("?",$redirect_set);
@@ -133,7 +138,7 @@ function srmpr_age_receive_form_submit($form, &$form_state){
     }else{
       $params = array();
     }
-    drupal_goto($data_redirect[0],$params);
+    _insert_database($values, $data_redirect[0],$params);
   }
   else{
     $params_redirect = $_GET;
@@ -141,7 +146,13 @@ function srmpr_age_receive_form_submit($form, &$form_state){
     unset($params_redirect['q']);
     unset($params_redirect['destination']);
     unset($_GET['destination']);
+    setcookie(
+      "adult",
+      "yes",
+      time() + (10 * 365 * 24 * 60 * 60)
+    );
     drupal_goto($destination, array('query' =>$params_redirect));
+
   }
 }
 
