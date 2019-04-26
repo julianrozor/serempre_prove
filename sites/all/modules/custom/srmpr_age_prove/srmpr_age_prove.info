@@ -1,0 +1,6 @@
+name = SEREMPRE AGE PROVE
+description = This module is used for validate the age to see to page
+package = Serempre
+version = 1.0
+core = 7.x
+configure = admin/config/age/ageform

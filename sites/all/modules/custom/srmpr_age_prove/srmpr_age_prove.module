@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * Implementacion del hook menu.
+ */
+function srmpr_age_prove_menu() {
+  $items = array();
+  //config container page 
+  $items['admin/config/age'] =  array(
+		'title' => t('Age Configuration') , 
+		'description' => t('Age Configuration') , 
+		'weight' => -8, 		
+		'page callback' => 'system_admin_menu_block_page',  
+		'access arguments' => array('access administration pages'), 
+		'file' => 'system.admin.inc',
+		'file path' => drupal_get_path('module', 'system'),
+		'position' => 'right', 
+  ); 
+  //age form configuration
+  $items['admin/config/age/ageform'] = array(
+    'title' => t('Configuration Age form'),
+    'description' => 'Settings for Age form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('srmpr_age_prove_form_config'),
+    'access arguments' => array('Perform administration srmpr_age_prove'),
+    'file' => 'inc/srmpr_age_prove.forms.inc',
+    'position' => 'left',
+    'weight' => -15,
+  );
+  //Age form 
+  $items['validar-edad'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => t('Validar edad'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('srmpr_age_receive_form'),
+    'access arguments' => array('access content'),
+    'file' => 'inc/srmpr_age_prove.forms.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_help().
+ */
+
+function srmpr_age_prove_help($path, $arg) {
+  //add help configuration Age
+  switch ($path) {
+    case 'admin/help#srmpr_age_prove':
+      return '<p>' . t('Help module', array('storage' => 'Help module' )) . '</p>';
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+
+function srmpr_age_prove_permission() {
+  // add permissions configuration
+  return array(
+    'administer srmpr_age_prove' =>  array(
+      'title' => t('Administer srmpr_age_prove'),
+      'description' => t('Perform administration srmpr_age_prove'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_page_alter().
+ */
+
+function srmpr_age_prove_page_alter(&$page) {
+  
+  global $theme, $base_url; 
+  if(variable_get('theme_default', "") == $theme && variable_get('config_age_front_page', TRUE) == TRUE && !empty(variable_get('config_age_list',""))){
+      $type_filter = variable_get('config_age_listed',"view_listed_true");
+      $lines = explode( "\n", variable_get('config_age_list',"config_age_list"));
+      $isset = FALSE;
+      
+      foreach ($lines as $url) {
+        if(current_path() == $url){
+          $isset = TRUE;
+        }
+      }
+      $data_params = $_GET;
+      unset($data_params['q']);
+      $params = http_build_query($data_params);
+      switch ($type_filter) {
+        case 'view_execept_listed':
+          if(empty($isset) && current_path() != 'validar-edad'){
+            drupal_goto($base_url . '/validar-edad?destination='.current_path().((!empty($params)) ?"&".$params: ""));
+          }
+          break;
+          case 'view_only_listed':
+          if($isset && current_path() != 'validar-edad'){
+            drupal_goto($base_url . '/validar-edad?destination='.current_path()."&".$params);
+          }
+          break;      
+        default:
+          # code...
+          break;
+      }
+    }
+    else{
+    }
+}
+
