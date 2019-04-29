@@ -47,6 +47,14 @@ function srmpr_age_prove_form_config($form, &$form_state){
 
 function srmpr_age_receive_form($form, &$form_state){
   $form = array();
+  $form['#attached']['js'][] = array(
+    'data' => libraries_get_path('jquery_validate') . '/jquery.validate.min.js',
+    'type' => 'file', 
+  );
+  $form['#attached']['js'][] = array(
+    'data' => drupal_get_path('module', 'srmpr_age_prove') . '/js/srmprAgeProve.js',
+    'type' => 'file', 
+  );
   //Verified active form
   $form['age_day'] = array(
     '#type' =>'textfield',

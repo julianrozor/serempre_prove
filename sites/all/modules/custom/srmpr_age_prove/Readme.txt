@@ -20,3 +20,11 @@ CONFIGURATION
 
      Users in roles with the "Access administration menu" permission will see
      the administration menu at the top of each page.
+
+LIBRARIES 
+
+Download the library JQuery Validate 1.10 for use this component from url https://ajax.aspnetcdn.com/ajax/jquery.validate/1.10.0/jquery.validate.min.js
+this module contains this library if the library of jquery is different please download other version. 
+Create folder with name jquery_validate and download the version jquery.validate.min.js for the existent jquery used in your site.
+
+
